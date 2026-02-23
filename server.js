@@ -11,13 +11,16 @@ const listingRoutes = require('./routes/listings');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Create uploads directory
+// Set your production frontend URL
+const FRONTEND_URL = process.env.FRONTEND_URL || 'https://nairobiVacantHouses.com';
+
+// Create uploads directory if it doesn't exist
 const uploadsDir = path.join(__dirname, 'uploads');
 if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
 
 // Middleware
 app.use(cors({
-  origin: ['http://localhost:3000', 'http://localhost:3001'],
+  origin: [FRONTEND_URL, 'http://localhost:3000', 'http://localhost:3001'],
   credentials: true
 }));
 app.use(express.json());
@@ -48,7 +51,8 @@ const startServer = async () => {
     await initDatabase();
     app.listen(PORT, () => {
       console.log(`🏠 Nairobi Vacant Houses API running on port ${PORT}`);
-      console.log(`📝 API docs: http://localhost:${PORT}/api/health`);
+      console.log(`📝 API docs: ${process.env.BASE_URL || `https://nvh-backend.onrender.com`}/api/health`);
+      console.log(`🌐 Frontend allowed origin: ${FRONTEND_URL}`);
     });
   } catch (error) {
     console.error('Failed to start server:', error);
